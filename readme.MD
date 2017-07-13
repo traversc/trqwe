@@ -3,7 +3,7 @@ Performance oriented statistical metrics and utility functions in R
 
 ## Installation
 ```R
-library(devtools); install_github("traversc/trqwe")
+devtools::install_github("traversc/trqwe")
 ```
 
 ## A summary of functions
