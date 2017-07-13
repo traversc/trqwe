@@ -1,9 +1,9 @@
-## trqwe - Performance oriented statistical metrics and utility functions in R
+# trqwe
+Performance oriented statistical metrics and utility functions in R
 
 ## Installation
 ```R
-library(devtools)
-install_github("traversc/trqwe")
+library(devtools); install_github("traversc/trqwe")
 ```
 
 ## A summary of functions
