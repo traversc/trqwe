@@ -4,6 +4,8 @@ Performance oriented statistical metrics and utility functions in R
 ## Installation
 ```R
 devtools::install_github("traversc/trqwe")
+
+(On Windows, install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first.)
 ```
 
 ## A summary of functions
