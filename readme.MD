@@ -1,4 +1,5 @@
-# trqwe - Performance oriented statistical metrics and utility functions in R
+# trqwe
+## Performance oriented statistical metrics and utility functions in R
 
 ## Installation
 ```R
