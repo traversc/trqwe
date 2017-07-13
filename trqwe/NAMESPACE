@@ -1,0 +1,3 @@
+useDynLib(trqwe)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
