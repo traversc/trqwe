@@ -34,5 +34,5 @@ Unit: milliseconds
 topn(x, 100, value = T)  433.6682  433.8882  434.771  434.4986  435.6029
 }
 \seealso{
-\url{http://stackoverflow.com/questions/18450778/r-fastest-way-to-get-the-indices-of-the-max-n-elements-in-a-vector}
+\url{http://stackoverflow.com/questions/18450778/}
 }

@@ -20,7 +20,9 @@ A matrix containing FPKM with the same dimensions as mat.
 Calculates FPKM from a count matrix.
 }
 \seealso{
-FPKM-UQ	A normalized read count in which gene expression values, in FPKM, are divided by the 75th percentile value.
+FPKM-UQ - A normalized read count in which gene expression values, in FPKM, are divided by the 75th percentile value.
+
 \url{https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/Expression_mRNA_Pipeline/}
+
 \url{http://vinaykmittal.blogspot.com/2013/10/fpkmrpkm-normalization-caveat-and-upper.html}
 }

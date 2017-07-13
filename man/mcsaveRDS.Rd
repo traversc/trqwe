@@ -27,5 +27,5 @@ Unit: seconds
   saveRDS(y, file = "temp2.Rds") 6.271499 6.271499 6.271499 6.271499 6.271499
 }
 \seealso{
-\url{http://stackoverflow.com/questions/28927750/what-is-the-method-to-save-objects-in-a-compressed-form-using-multiple-threads-c}
+\url{http://stackoverflow.com/questions/28927750/}
 }
