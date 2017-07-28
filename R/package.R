@@ -7,5 +7,5 @@
 #' @import Rcpp
 #' @importFrom Rcpp evalCpp
 #' @useDynLib trqwe
-#' @name Travers
+#' @name trqwe
 NULL  
