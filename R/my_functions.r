@@ -389,8 +389,7 @@ mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
     }
 }
 
-# `%+%` <- function(a, b) paste0(a, b)
-
+#' @export
 #' Concatenate strings.  
 #' @description Concatenates two strings.  
 #' @param a First string.  
