@@ -1,6 +1,3 @@
-#'@importFrom Rcpp evalCpp
-#'@useDynLib trqwe
-
 #' Reload a package.
 #' @description Unload and reload a package and sets the namespace search order.  
 #' @param package Unquoted package name.
