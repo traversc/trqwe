@@ -1,5 +1,3 @@
-#'@importFrom Rcpp evalCpp
-
 #' Reload a package.
 #' @description Unload and reload a package and sets the namespace search order.  
 #' @param package Unquoted package name.
@@ -989,3 +987,6 @@ matrixFactor <- function(x, names=NULL) {
     }
     return(x_mat)
 }
+
+
+#'@importFrom Rcpp evalCpp
