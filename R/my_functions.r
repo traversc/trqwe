@@ -247,7 +247,7 @@ tablec <- function(x, sort=F) {
         stop("x must be a character, integer or factor vector")
     }
     if(sort) {
-        return(ret[sort(names(ret))], na.last=F)
+        return(ret[sort(names(ret), na.last=F)])
     } else {
         return(ret)
     }
