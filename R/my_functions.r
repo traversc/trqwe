@@ -1,9 +1,12 @@
+#'@importFrom Rcpp evalCpp
+
 #' Reload a package.
 #' @description Unload and reload a package and sets the namespace search order.  
 #' @param package Unquoted package name.
 #' @param pos Namespace search position.
 #' @examples
 #' \code{reload(trqwe)}
+#' @export
 reload <- function(package, pos=2) {
     pstring <- deparse(substitute(package))
     print(pstring)
@@ -14,6 +17,7 @@ reload <- function(package, pos=2) {
 #' Unload and reload trqwe.
 #' @description Unload and reload trqwe.
 #' Shortcut for \code{reload(trqwe)}
+#' @export
 reloadtrqwe <- function() {
     reload(trqwe)
 }
@@ -24,6 +28,7 @@ reloadtrqwe <- function() {
 #' @param package unquoted package name.
 #' @examples
 #' \code{bioc(DESeq2)}
+#' @export
 bioc <- function(package) {
     source("http://bioconductor.org/biocLite.R")
     pstring <- deparse(substitute(package))
@@ -35,6 +40,7 @@ bioc <- function(package) {
 #' @param package unquoted package name.
 #' @examples
 #' \code{install(Rcpp)}
+#' @export
 install <- function(package, repos="http://cran.us.r-project.org") {
     pstring <- deparse(substitute(package))
     install.packages(pstring, repos=repos)
@@ -47,6 +53,7 @@ install <- function(package, repos="http://cran.us.r-project.org") {
 #' > timePrompt()
 #' 0.000s> x <- sample(1:10, size=1e8, replace=T)
 #' 1.240s> 
+#' @export
 timePrompt <- function() {
     removeTaskCallback(".exec_time_prompt")
     updatePrompt <- function(...) {
@@ -67,6 +74,7 @@ timePrompt <- function() {
 #' my_data <- VADeaths
 #' .stats
 #' > [1] "dim: 5 4, length: 20, class: matrix, typeof: double"
+#' @export
 statsCallback <- function() {
     removeTaskCallback(".stats_callback")
     statsUpdate <- function(...) {
@@ -87,6 +95,7 @@ statsCallback <- function() {
 #' @return A boolean vector of the same length as \code{vec}.  TRUE if the element is duplicated, FALSE if not.  
 #' @examples
 #' allDups(sample(1:100, size=100, replace=T)
+#' @export
 allDups <- function(vec) {
 	duplicated(vec) | rev(duplicated(rev(vec)))
 }
@@ -106,6 +115,7 @@ allDups <- function(vec) {
 #'                           expr      min       lq     mean   median       uq
 #' fastReadLines("/tmp/temp.txt") 335.3874 335.9188 336.5900 336.4502 337.1912
 #'     readLines("/tmp/temp.txt") 724.9136 725.4523 727.2444 725.9911 728.4098
+#' @export
 fastReadLines <- function(fname, newlinechar="\n", nchars=NULL) {
     if(is.null(nchars)) {
         nchars = file.info(fname)$size
@@ -120,6 +130,7 @@ fastReadLines <- function(fname, newlinechar="\n", nchars=NULL) {
 #' @param n Number of lines to display.  Default 10. 
 #' @param ncols Number of columns to display.  Default 10. 
 #' @return \code{n} by \code{ncols} subset of the matrix taken from the upper-left corner.  
+#' @export
 head2 <- function(x, n = 10, ncols = 10) {
     head(x[,seq_len(ncols)])
 }
@@ -130,6 +141,7 @@ head2 <- function(x, n = 10, ncols = 10) {
 #' @param n Number of lines to display.  Default 10. 
 #' @param ncols Number of columns to display.  Default 10. 
 #' @return \code{n} by \code{ncols} subset of the matrix taken from the lower-left corner.  
+#' @export
 tail2 <- function(x, n = 10, ncols = 10) {
     tail(x[,seq_len(ncols)])
 }
@@ -143,6 +155,7 @@ tail2 <- function(x, n = 10, ncols = 10) {
 #' TCGA_barcode(c("TCGA-02-0001-01C-01D-0182-01", "TCGA-02-0001-11C-01D-0182-01"), what="tissue")
 #' 
 #' [1] "01" "11"
+#' @export
 TCGA_barcode <- function(x, what = "patient") {
     reg <- "TCGA-(..)-(....)-?(..)?(.)?-?(..)?(.)?-?(....)?-?(..)?"
     group <- switch(what, 
@@ -174,6 +187,7 @@ TCGA_barcode <- function(x, what = "patient") {
 #' [4] "     Bill Adler               *   LETTERS TO THE AIR FORCE ON UFOS  1967"
 #' [5] "     Gordon W. Allen              OVERLORDS OLYMPIANS AND THE UFO   1974"
 #' [6] "     Robert B. Beard              FLYING SAUCERS, UFO'S AND EXTRA"
+#' @export
 mgrepl <- function(patterns, x, ...) {
     Reduce("|",lapply(patterns, grepl, x, ...))
 }
@@ -222,6 +236,7 @@ tableVector <- function(x, factors=NULL) {
 #'            table(x) 5.778514 5.829125 5.855560 5.879737 5.894083 5.908430
 #'           tablec(x) 1.589360 1.589381 1.589516 1.589402 1.589594 1.589786
 #' tablec(x, sort = T) 1.589386 1.590520 1.591824 1.591655 1.593044 1.594432
+#' @export
 tablec <- function(x, sort=F) {
     cl <- class(x)
     if(cl == "character") {
@@ -245,6 +260,7 @@ tablec <- function(x, sort=F) {
 #' @param env The environment to search (default global environment). 
 #' @param units Units to print out for each variable.  
 #' @return A data.frame containing the size of each object.  
+#' @export
 varSizes <- function(env=globalenv(), units="KB") {
     vars <- ls(envir=env)
     if(length(vars) == 0) return(NULL)
@@ -266,6 +282,7 @@ varSizes <- function(env=globalenv(), units="KB") {
 #' \url{https://gdc-docs.nci.nih.gov/Data/Bioinformatics_Pipelines/Expression_mRNA_Pipeline/}
 #'
 #' \url{http://vinaykmittal.blogspot.com/2013/10/fpkmrpkm-normalization-caveat-and-upper.html}
+#' @export
 fpkmFromCounts<- function(mat, gene_lengths, uq_norm=T) {
     gene_lengths <- gene_lengths[rownames(mat)]
     gene_lengths <- gene_lengths / 1000
@@ -375,6 +392,7 @@ fpkmFromCounts<- function(mat, gene_lengths, uq_norm=T) {
 #' exon_counts <- counts(dxd)
 #' f <- rowData(dxd)$groupID
 #' gene_counts <- mcsplitapply(exon_counts, f, colSums)
+#' @export
 mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
     if(mc.cores > 1) require(parallel)
     uf <- unique(f)
@@ -398,6 +416,7 @@ mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
 #' 'Hello ' %Q% 'World'
 #' 
 #' [1] "Hello World"
+#' @export
 `%Q%` <- function(a, b) paste0(a, b)
 
 
@@ -411,6 +430,7 @@ mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
 #' print(x)
 #' 
 #' [1] 1 2 3 4 5 6
+#' @export
 `append<-` <- function(x, value) {
     c(x, value)
 }
@@ -425,6 +445,7 @@ mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
 #' print(x)
 #' 
 #' [1] 6 1 2 3 4 5
+#' @export
 `prepend<-` <- function(x, value) {
     c(value, x)
 }
@@ -449,6 +470,7 @@ mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
 #' topn(x, 100, value = T)  433.6682  433.8882  434.771  434.4986  435.6029
 #' @seealso
 #' \url{http://stackoverflow.com/questions/18450778/}
+#' @export
 topn <- function(x, n=100, value=F, lowest=F) {
     if(lowest) x <- -x
     nx <- length(x)
@@ -470,6 +492,7 @@ topn <- function(x, n=100, value=F, lowest=F) {
 #' x <- rnorm(1e3)
 #' se(x)
 #' [1] 0.03192027
+#' @export
 se <- function(x) {x<-na.omit(x);sd(x)/sqrt(length(x))}
 
 # rescale <- function(x, min=0, max=1) {
@@ -540,6 +563,7 @@ read.gmt <- function(gmtfile) {
 #' 3 0.1339746 0.7113249
 #' @seealso
 #' \url{http://stackoverflow.com/questions/2535234/find-cosine-similarity-in-r}
+#' @export
 cosineDist <- function(x){
   as.dist(1 - x%*%t(x)/(sqrt(rowSums(x^2) %*% t(rowSums(x^2))))) 
 }
@@ -636,7 +660,7 @@ scaleVec <- function(x, ...) {
     # do.call(what, c(args, extra_args))
 # }
 
-
+#' @export
 saveListFF <- function(list, return_ff_list=F, ...) {
     require(ff)
     if(is.null(names(list))) {
@@ -652,6 +676,7 @@ saveListFF <- function(list, return_ff_list=F, ...) {
     if(return_ff_list) return(ff_list)
 }
 
+#' @export
 loadFFList <- function(file, ...) {
     require(ff)
     ff_env <- new.env()
@@ -667,6 +692,7 @@ loadFFList <- function(file, ...) {
 #' chop(c("    hello ", "  123  \t"))
 #'
 #' [1] "hello" "123"
+#' @export
 chop <- function(x) {
     gsub("\\s+$","",gsub("^\\s+","",x))
 }
@@ -748,6 +774,7 @@ mcReduce <- function(FUN,x,mc.cores=4) {
 #'   saveRDS(y, file = "temp2.Rds") 6.271499 6.271499 6.271499 6.271499 6.271499
 #' @seealso
 #' \url{http://stackoverflow.com/questions/28927750/}
+#' @export
 mcsaveRDS <- function(object,file,mc.cores=min(parallel::detectCores(),4)) {
   con <- pipe(paste0("pigz -p",mc.cores," > ",file),"wb")
   saveRDS(object, file = con)
@@ -765,6 +792,7 @@ mcsaveRDS <- function(object,file,mc.cores=min(parallel::detectCores(),4)) {
 #' xmc <- mcreadRDS("temp.Rds")
 #' @seealso
 #' \url{http://stackoverflow.com/questions/28927750/}
+#' @export
 mcreadRDS <- function(file,mc.cores=min(parallel::detectCores(),4)) {
   con <- pipe(paste0("pigz -d -c -p",mc.cores," ",file))
   object <- readRDS(file = con)
@@ -783,6 +811,7 @@ mcreadRDS <- function(file,mc.cores=min(parallel::detectCores(),4)) {
 #' with(nelson_aelen_surv(veteran$time, veteran$status), plot(ti, Hi, type="b"))
 #' @seealso
 #' #https://en.wikipedia.org/wiki/Nelson-Aalen_estimator
+#' @export
 nelson_aelen_surv <- function(time, event) {
     ord <- order(time)
     time <- time[ord]
@@ -804,6 +833,7 @@ nelson_aelen_surv <- function(time, event) {
 #' ww_test(c(sample(6, 90, replace=T),rep(1,10)))
 #' @seealso
 #' Reference https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_Runs.pdf
+#' @export
 ww_test <- function(x) {
     x <- factor(x)
     n <- length(x)
@@ -835,6 +865,7 @@ ww_test <- function(x) {
 #' fastAUC(probs, class)
 #' @seealso
 #' Reference https://stat.ethz.ch/pipermail/r-help/2005-September/079872.html
+#' @export
 fastAUC <- function(probs, class) {
     x <- probs
     y <- class
@@ -859,6 +890,7 @@ fastAUC <- function(probs, class) {
 #' fit <- cv.glmnet(data, class, family="binomial")
 #' probs <- predict(fit, newx=data)[,1]
 #' with(fastROC(probs, class), plot(fpr, tpr, type="l"))
+#' @export
 fastROC <- function(probs, class) {
     if(is.factor(class)) {class = as.numeric(class) - 1}
     class_sorted <- class[order(probs, decreasing=T)]
@@ -881,6 +913,7 @@ fastROC <- function(probs, class) {
 #' fit <- cv.glmnet(data, class, family="binomial")
 #' probs <- predict(fit, newx=data)[,1]
 #' with(fastPR(probs, class), plot(recall, precision, type="l"))
+#' @export
 fastPR <- function(probs, class) {
     if(is.factor(class)) {class = as.numeric(class) - 1}
     class_sorted <- class[order(probs, decreasing=T)]
@@ -896,6 +929,7 @@ fastPR <- function(probs, class) {
 #' @return The MCC score.  
 #' @seealso
 #' \url{https://en.wikipedia.org/wiki/Matthews_correlation_coefficient}
+#' @export
 mccscore <- function(probs, class) {
     require(Rmpfr)
     m <- function(x) mpfr(x, precBits=20)
@@ -913,6 +947,7 @@ mccscore <- function(probs, class) {
 #' @return The adjusted posterior probability.  
 #' @seealso
 #' Dal Pozzolo, Andrea, et al. "Calibrating probability with undersampling for unbalanced classification." Computational Intelligence, 2015 IEEE Symposium Series on. IEEE, 2015.
+#' @export
 posteriorBalance <- function(probs, beta) {
     beta*probs / (beta*probs-probs+1)
 }
@@ -924,6 +959,7 @@ posteriorBalance <- function(probs, beta) {
 #' @return The F1 score.  
 #' @seealso
 #' \url{https://en.wikipedia.org/wiki/F1_score}
+#' @export
 f1score <- function(probs, class) {
     tp <- sum((probs == 1) & (class == 1))
     fp <- sum((probs == 1) & (class == 0))
@@ -939,6 +975,7 @@ f1score <- function(probs, class) {
 #' @param time The time of each patient.  
 #' @param event The death of each patient: 1 for a patient death, 0 for censored. 
 #' @return The concordance index.  
+#' @export
 cindex <- function(probs, time, event)
 {
     wh <- which(event==1)
@@ -954,6 +991,7 @@ cindex <- function(probs, time, event)
 #' @description Calculates the results of the sigmoid function.  
 #' @param probs x Input to the function.  
 #' @return Sigmoid(x)
+#' @export
 sigmoid <- function(x) {
     return(1/(1+exp(-x)))
 }
@@ -962,6 +1000,7 @@ sigmoid <- function(x) {
 #' @description Calculates the results of the Logit Transformation.  
 #' @param x Input to the function (e.g., probabilities from 0 to 1).  
 #' @return Logit(x)
+#' @export
 logit <- function(x) {
     return(log(x/(1-x)))
 }
@@ -973,6 +1012,7 @@ logit <- function(x) {
 #' @return The design matrix.  
 #' @examples
 #' matrixFactor(factor(letters))
+#' @export
 matrixFactor <- function(x, names=NULL) {
     x <- factor(x)
     xlevels <- levels(x)
@@ -987,6 +1027,3 @@ matrixFactor <- function(x, names=NULL) {
     }
     return(x_mat)
 }
-
-
-#'@importFrom Rcpp evalCpp
