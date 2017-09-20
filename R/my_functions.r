@@ -1026,8 +1026,24 @@ matrixFactor <- function(x, names=NULL) {
     return(x_mat)
 }
 
+#' Make percentage from number
+#' @description Make percentage from number
+#' @param x A number.
+#' @param digits Number of decimal places, default 2.  
+#' @return A percentage.
+#' @examples
+#' make_percent(0.424, 2)
+#' @export
+make_percent <- function(x, digits=2) {
+  paste0(round(100*x,digits),"%")
+}
+
 
 drew_table_plot <- function(my_data_frame, title=NULL) {
+    library(gridExtra)
+    library(gtable)
+    library(grid)
+    library(ggplot2)
   tt3 = ttheme_minimal(  core=list(bg_params = list(fill = c("azure3","azure2", "azure1", "white"), col=NA),
                                    fg_params=list(fontface=3, cex = .55)), colhead=list(fg_params=list(col="black", fontface=4L,
                                                                                                        cex = .55)), rowhead=list(fg_params=list(col="white", fontface=3L, cex = .55)))
