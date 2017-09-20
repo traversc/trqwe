@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-cd ~/Desktop/trqwe
 Rscript -e "library(Rcpp); compileAttributes('.');"
 Rscript -e "library(roxygen2); roxygenise('.');"
 

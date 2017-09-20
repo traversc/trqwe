@@ -1025,3 +1025,17 @@ matrixFactor <- function(x, names=NULL) {
     }
     return(x_mat)
 }
+
+
+drew_table_plot <- function(my_data_frame, title=NULL) {
+  tt3 = ttheme_minimal(  core=list(bg_params = list(fill = c("azure3","azure2", "azure1", "white"), col=NA),
+                                   fg_params=list(fontface=3, cex = .55)), colhead=list(fg_params=list(col="black", fontface=4L,
+                                                                                                       cex = .55)), rowhead=list(fg_params=list(col="white", fontface=3L, cex = .55)))
+  g1 = tableGrob(my_data_frame, theme = tt3)
+  title = textGrob(title, gp=gpar(fontsize=14))
+  padding = unit(5,"mm")
+  table = gtable_add_rows(g1, heights = grobHeight(title) + padding, pos = 0)
+  table = gtable_add_grob(table, title, 1, 1, 1, ncol(table))
+  grid.arrange(table, nrow=1, newpage = FALSE)
+}
+

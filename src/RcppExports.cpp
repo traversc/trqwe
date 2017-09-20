@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // tablec_string
 std::unordered_map<SEXP, int> tablec_string(CharacterVector x);
-RcppExport SEXP trqwe_tablec_string(SEXP xSEXP) {
+RcppExport SEXP _trqwe_tablec_string(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // tablec_int
 std::unordered_map<int, int> tablec_int(IntegerVector x);
-RcppExport SEXP trqwe_tablec_int(SEXP xSEXP) {
+RcppExport SEXP _trqwe_tablec_int(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,7 +29,7 @@ END_RCPP
 }
 // tablec_factor
 IntegerVector tablec_factor(IntegerVector x);
-RcppExport SEXP trqwe_tablec_factor(SEXP xSEXP) {
+RcppExport SEXP _trqwe_tablec_factor(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -40,9 +40,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"trqwe_tablec_string", (DL_FUNC) &trqwe_tablec_string, 1},
-    {"trqwe_tablec_int", (DL_FUNC) &trqwe_tablec_int, 1},
-    {"trqwe_tablec_factor", (DL_FUNC) &trqwe_tablec_factor, 1},
+    {"_trqwe_tablec_string", (DL_FUNC) &_trqwe_tablec_string, 1},
+    {"_trqwe_tablec_int", (DL_FUNC) &_trqwe_tablec_int, 1},
+    {"_trqwe_tablec_factor", (DL_FUNC) &_trqwe_tablec_factor, 1},
     {NULL, NULL, 0}
 };
 

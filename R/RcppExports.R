@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 tablec_string <- function(x) {
-    .Call('trqwe_tablec_string', PACKAGE = 'trqwe', x)
+    .Call('_trqwe_tablec_string', PACKAGE = 'trqwe', x)
 }
 
 tablec_int <- function(x) {
-    .Call('trqwe_tablec_int', PACKAGE = 'trqwe', x)
+    .Call('_trqwe_tablec_int', PACKAGE = 'trqwe', x)
 }
 
 tablec_factor <- function(x) {
-    .Call('trqwe_tablec_factor', PACKAGE = 'trqwe', x)
+    .Call('_trqwe_tablec_factor', PACKAGE = 'trqwe', x)
 }
 
