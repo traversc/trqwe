@@ -55,8 +55,8 @@ install <- function(package, repos="http://cran.us.r-project.org") {
 timePrompt <- function() {
     removeTaskCallback(".exec_time_prompt")
     updatePrompt <- function(...) {
-        utime <- proc.time()[1]
-        utime_diff <- sprintf("%.3f", utime-get0(".prev_time", envir=globalenv(), ifnotfound=0))
+        utime <- Sys.time()
+        utime_diff <- sprintf("%.3f", as.numeric(utime-get0(".prev_time", envir=globalenv(), ifnotfound=utime)))
         options(prompt=paste0(utime_diff,"s> "))
         assign(".prev_time", utime, envir=globalenv())
         return(TRUE)
@@ -1055,3 +1055,10 @@ drew_table_plot <- function(my_data_frame, title=NULL) {
   grid.arrange(table, nrow=1, newpage = FALSE)
 }
 
+gg_center_title <- function() {
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+gg_rotate_xlabels <- function(angle=-90, hjust=1) {
+    theme(axis.text.x = element_text(angle = angle, hjust = hjust))
+}
