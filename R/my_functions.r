@@ -51,12 +51,14 @@ install <- function(package, repos="http://cran.us.r-project.org") {
 #' > timePrompt()
 #' 0.000s> x <- sample(1:10, size=1e8, replace=T)
 #' 1.240s> 
+#' Note - this time is not accurate if child processes or multithreading is involved.  
 #' @export
 timePrompt <- function() {
     removeTaskCallback(".exec_time_prompt")
     updatePrompt <- function(...) {
-        utime <- Sys.time()
-        utime_diff <- sprintf("%.3f", as.numeric(utime-get0(".prev_time", envir=globalenv(), ifnotfound=utime)))
+        utime <- proc.time()
+        utime_prev <- get0(".prev_time", envir=globalenv(), ifnotfound=utime)
+        utime_diff <- sprintf("%.3f", sum(utime[c(1,2)] - utime_prev[c(1,2)]))
         options(prompt=paste0(utime_diff,"s> "))
         assign(".prev_time", utime, envir=globalenv())
         return(TRUE)
