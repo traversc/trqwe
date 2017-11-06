@@ -396,8 +396,9 @@ fpkmFromCounts<- function(mat, gene_lengths, uq_norm=T) {
 mcsplitapply <- function(mat, f, func, mc.cores=4, .combine=rbind, ...) {
     if(mc.cores > 1) require(parallel)
     uf <- unique(f)
-    splitmat <- parallel::mclapply(uf, function(fi) mat[f == fi,,drop=F], mc.cores=mc.cores)
-    ret <- parallel::mclapply(splitmat, func, mc.cores=mc.cores)
+    ret <- parallel::mclapply(uf, function(fi) {
+      func(mat[f == fi,,drop=F])
+      }, mc.cores=mc.cores)
     names(ret) <- uf
     if(!is.function(.combine)) {
         return(ret)
@@ -1064,3 +1065,36 @@ gg_center_title <- function() {
 gg_rotate_xlabels <- function(angle=-90, hjust=1) {
     theme(axis.text.x = element_text(angle = angle, hjust = hjust))
 }
+
+#https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2
+gg_legend<-function(a.gplot){ 
+  tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
+  legend <- tmp$grobs[[leg]] 
+  return(legend)
+}
+
+
+#' Fast binary KNN classifier
+#' @description Fast binary KNN classifier
+#' @param distmat A NxN pre-computed distance matrix
+#' @param train_idx Train indicies
+#' @param test_idx Test indicies
+#' @param classes vector length N, 1 or 0
+#' @param K Number of nearest neighbors parameter
+#' @param mc.cores Number of threads to use
+#' @return A prediction vector for the test set based on the class labels of the train set.
+#' @export
+trqwe_KNN <- function(distmat, train_idx, test_idx, classes, K, mc.cores=1) {
+  if(mc.cores==1) {
+    sapply(test_idx, function(ti) {
+      sum(classes[topn(distmat[ti,train_idx], n=K, lowest=T)])/K
+    })
+  } else {
+    unlist(mclapply(test_idx, function(ti) {
+      sum(classes[topn(distmat[ti,train_idx], n=K, lowest=T)])/K
+    }, mc.cores=mc.cores))
+  }
+}
+
+
