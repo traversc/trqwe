@@ -4,7 +4,7 @@
 \alias{fastAUC}
 \title{Fast AUC}
 \usage{
-fastAUC(probs, class)
+fastAUC(probs, class, method = "trqwe")
 }
 \arguments{
 \item{probs}{A numeric vector of probabilities or likelihoods for each data point.}

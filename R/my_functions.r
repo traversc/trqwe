@@ -867,7 +867,14 @@ ww_test <- function(x) {
 #' @seealso
 #' Reference https://stat.ethz.ch/pipermail/r-help/2005-September/079872.html
 #' @export
-fastAUC <- function(probs, class) {
+fastAUC <- function(probs, class, method="trqwe") {
+    #ROCR is now much faster
+    if(method=="ROCR") {
+      require(ROCR)
+      pred <- ROCR::prediction(probs, class)
+      perf <- performance(pred, "auc")
+      return(perf@y.values[[1]])
+    }
     x <- probs
     y <- class
     x1 = x[y==1]; n1 = length(x1); 
@@ -1062,7 +1069,7 @@ gg_center_title <- function() {
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-gg_rotate_xlabels <- function(angle=-90, hjust=1) {
+gg_rotate_xlabels <- function(angle=90, hjust=1) {
     theme(axis.text.x = element_text(angle = angle, hjust = hjust))
 }
 
@@ -1097,4 +1104,23 @@ trqwe_KNN <- function(distmat, train_idx, test_idx, classes, K, mc.cores=1) {
   }
 }
 
-
+#' Set rownames of data.frame or matrix
+#' @description Set rownames of data.frame or matrix and return it, for use with pipes
+#' @param df data.frame or matrix
+#' @param rownames rownames to add
+#' @return df with rownames added
+#' @export
+add_rownames <- function(df, rownames) {
+  rownames(df) <- rownames
+  return(df)
+}
+#' Set colnames of data.frame or matrix
+#' @description Set colnames of data.frame or matrix and return it, for use with pipes
+#' @param df data.frame or matrix
+#' @param colnames colnames to add
+#' @return df with colnames added
+#' @export
+add_colnames <- function(df, colnames) {
+  colnames(df) <- colnames
+  return(df)
+}
