@@ -4,18 +4,22 @@
 \alias{posteriorBalance}
 \title{Posterior probability adjustment.}
 \usage{
-posteriorBalance(probs, beta)
+posteriorBalance(probs, beta = NULL, Nplus, Nminus)
 }
 \arguments{
 \item{probs}{The original posterior probability.}
 
 \item{beta}{The adjustment factor.}
+
+\item{Nplus}{The number of positive examples in the real data.  Only used if beta is NULL.}
+
+\item{Nminus}{The number of negative examples in the real data.  Only used if beta is NULL.}
 }
 \value{
 The adjusted posterior probability.
 }
 \description{
-Adjusts the posterior probability of a classifier based on unbalanced datasets.  In classification model where the negative data is randomly under-sampled and all the positive data is used, the adjustment factor (beta) is p(s=1|-) - i.e., the probability that a negative datapoint is selected in the classifier.
+Adjusts the posterior probability of a classifier based on unbalanced datasets.  In classification model where the negative data is randomly under-sampled and all the positive data is used, the adjustment factor (beta) is p(s=1|-) = p(+)/p(-).  I.e., the probability that a negative datapoint is selected in the classifier.  beta ~ N+/N-.
 }
 \seealso{
 Dal Pozzolo, Andrea, et al. "Calibrating probability with undersampling for unbalanced classification." Computational Intelligence, 2015 IEEE Symposium Series on. IEEE, 2015.

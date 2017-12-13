@@ -698,15 +698,15 @@ chop <- function(x) {
     gsub("\\s+$","",gsub("^\\s+","",x))
 }
 
-# multipagePlot <- function(plot_list, nrow=2, ncol=2,...) {
-    # require(grid)
-    # require(gridExtra)
-    # while(length(plot_list) > 0) {
-        # page_plots <- plot_list[seq(min(nrow*ncol, length(plot_list)))]
-        # plot_list <- plot_list[-seq(nrow*ncol)]
-        # grid.arrange(grobs=page_plots, ncol=ncol, nrow=nrow,...)
-    # }
-# }
+multipagePlot <- function(plot_list, nrow=2, ncol=2,...) {
+  require(grid)
+  require(gridExtra)
+  while(length(plot_list) > 0) {
+    page_plots <- plot_list[seq(min(nrow*ncol, length(plot_list)))]
+    plot_list <- plot_list[-seq(nrow*ncol)]
+    grid.arrange(grobs=page_plots, ncol=ncol, nrow=nrow,...)
+  }
+}
 
 
 
@@ -949,15 +949,20 @@ mccscore <- function(probs, class) {
 }
 
 #' Posterior probability adjustment.
-#' @description Adjusts the posterior probability of a classifier based on unbalanced datasets.  In classification model where the negative data is randomly under-sampled and all the positive data is used, the adjustment factor (beta) is p(s=1|-) - i.e., the probability that a negative datapoint is selected in the classifier.  
+#' @description Adjusts the posterior probability of a classifier based on unbalanced datasets.  In classification model where the negative data is randomly under-sampled and all the positive data is used, the adjustment factor (beta) is p(s=1|-) = p(+)/p(-).  I.e., the probability that a negative datapoint is selected in the classifier.  beta ~ N+/N-.  
 #' @param probs The original posterior probability.  
 #' @param beta The adjustment factor.  
+#' @param Nplus The number of positive examples in the real data.  Only used if beta is NULL.  
+#' @param Nminus The number of negative examples in the real data.  Only used if beta is NULL.  
 #' @return The adjusted posterior probability.  
 #' @seealso
 #' Dal Pozzolo, Andrea, et al. "Calibrating probability with undersampling for unbalanced classification." Computational Intelligence, 2015 IEEE Symposium Series on. IEEE, 2015.
 #' @export
-posteriorBalance <- function(probs, beta) {
-    beta*probs / (beta*probs-probs+1)
+posteriorBalance <- function(probs, beta=NULL, Nplus, Nminus) {
+  if(is.null(beta)) {
+    beta <- Nplus/Nminus
+  }
+  beta*probs / (beta*probs-probs+1)
 }
 
 #' F1 score.  
@@ -1069,8 +1074,12 @@ gg_center_title <- function() {
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-gg_rotate_xlabels <- function(angle=90, hjust=1) {
-    theme(axis.text.x = element_text(angle = angle, hjust = hjust))
+gg_rotate_xlabels <- function(angle=90, hjust=1, vjust=0.5, ...) {
+    theme(axis.text.x = element_text(angle = angle, hjust = hjust, vjust=vjust))
+}
+
+gg_legend_bottom <- function() {
+  theme(legend.position="bottom")
 }
 
 #https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2
