@@ -1119,7 +1119,7 @@ trqwe_KNN <- function(distmat, train_idx, test_idx, classes, K, mc.cores=1) {
 #' @param rownames rownames to add
 #' @return df with rownames added
 #' @export
-add_rownames <- function(df, rownames) {
+set_rownames <- function(df, rownames) {
   rownames(df) <- rownames
   return(df)
 }
@@ -1129,7 +1129,7 @@ add_rownames <- function(df, rownames) {
 #' @param colnames colnames to add
 #' @return df with colnames added
 #' @export
-add_colnames <- function(df, colnames) {
+set_colnames <- function(df, colnames) {
   colnames(df) <- colnames
   return(df)
 }
