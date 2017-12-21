@@ -1133,3 +1133,36 @@ set_colnames <- function(df, colnames) {
   colnames(df) <- colnames
   return(df)
 }
+
+# https://stackoverflow.com/questions/7509910/how-can-i-create-a-custom-assignment-using-a-replacement-function
+once <- structure(NA, class = "once")
+"[<-.once" <- function(once, x, value) {
+  xname <- deparse(substitute(x))
+  pf <- parent.frame()
+  if (!exists(xname, pf)) assign(xname, value, pf)
+  once
+}
+
+#' Multiple return assignment
+#' @description Python style multiple return assignment.  
+#' @examples
+#' mreturn[x,y,z] <- list("hello", c(1,2,3), sqrt(2))
+#' print(x)
+#' [1] "hello"
+#' print(y)
+#' [1] 1 2 3
+#' print(z)
+#' [1] 1.414214
+#' @rdname mreturn
+#' @export
+mreturn <- structure(NA, class = "mreturn")
+
+#' @export
+`[<-.mreturn` <- function(mreturn, ..., value) {
+  vars <- sapply(substitute(list(...)), deparse)[-1]
+  stopifnot(all(make.names(vars) == vars)) # invalid variable names
+  stopifnot(length(value) == length(vars)) # incorrect number of return values
+  for(i in 1:length(vars)) {
+    assign(vars[i], value=value[[i]], envir = parent.frame())
+  }
+}
