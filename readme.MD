@@ -47,6 +47,7 @@ devtools::install_github("traversc/trqwe")
 * %Q% - Infix operator for string concatenation
 * TCGA_barcode - Extracts information from TCGA barcodes
 
+
 ### Package/environment management
 * reload - Reload a package and set the position in the search order
 * bioc - Easy installation bioconductor packages
