@@ -2,7 +2,7 @@
 % Please edit documentation in R/my_functions.r
 \name{mcsplitapply}
 \alias{mcsplitapply}
-\title{Parallel split-matrix loop.}
+\title{Parallel split-matrix or dataframe apply loop}
 \usage{
 mcsplitapply(mat, f, func, mc.cores = 4, .combine = rbind, ...)
 }
@@ -21,7 +21,7 @@ mcsplitapply(mat, f, func, mc.cores = 4, .combine = rbind, ...)
 A list or a combined object depending on the .combine parameter.
 }
 \description{
-Splits a matrix into subsets based on a factor, and applies a function to each subset.  Typical use case: sum exon count data to gene count data.
+Splits a matrix or data.frame into subsets based on a factor, and applies a function to each subset.  Typical use case: sum exon count data to gene count data.  This is similar to the dplyr idiom: \code{df \%>\% group_by(f) \%>\% do(...)}, but has several advantages.  1) mcsplitapply can be used on matrices (and is therefore much faster), 2) inherently parallelized, 3) can return results other than dataframes, 4) you can specify how the data are combined (default is rbind).
 }
 \examples{
 library(pasilla)

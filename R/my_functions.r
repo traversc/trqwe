@@ -376,8 +376,9 @@ fpkmFromCounts<- function(mat, gene_lengths, uq_norm=T) {
     # }
 # }
 
-#' Parallel split-matrix loop.
-#' @description Splits a matrix into subsets based on a factor, and applies a function to each subset.  Typical use case: sum exon count data to gene count data.  
+#' Parallel split-matrix or dataframe apply loop
+#' @description 
+#' Splits a matrix or data.frame into subsets based on a factor, and applies a function to each subset.  Typical use case: sum exon count data to gene count data.  This is similar to the dplyr idiom: \code{df \%>\% group_by(f) \%>\% do(...)}, but has several advantages.  1) mcsplitapply can be used on matrices (and is therefore much faster), 2) inherently parallelized, 3) can return results other than dataframes, 4) you can specify how the data are combined (default is rbind).   
 #' @param mat The matrix.
 #' @param f A factor of length equal to nrow(mat).  The levels of this factor will split the matrix into subsets.  
 #' @param func The function to apply to each subset.  
@@ -1143,26 +1144,26 @@ once <- structure(NA, class = "once")
   once
 }
 
-#' Multiple return assignment
-#' @description Python style multiple return assignment.  
-#' @examples
-#' mreturn[x,y,z] <- list("hello", c(1,2,3), sqrt(2))
-#' print(x)
-#' [1] "hello"
-#' print(y)
-#' [1] 1 2 3
-#' print(z)
-#' [1] 1.414214
-#' @rdname mreturn
-#' @export
-mreturn <- structure(NA, class = "mreturn")
-
-#' @export
-`[<-.mreturn` <- function(mreturn, ..., value) {
-  vars <- sapply(substitute(list(...)), deparse)[-1]
-  stopifnot(all(make.names(vars) == vars)) # invalid variable names
-  stopifnot(length(value) == length(vars)) # incorrect number of return values
-  for(i in 1:length(vars)) {
-    assign(vars[i], value=value[[i]], envir = parent.frame())
-  }
-}
+# multiple assignment; the zeallot package does it better, so no longer using this approach
+#' #' Multiple return assignment
+#' #' @description Python style multiple return assignment.  
+#' #' @examples
+#' #' mreturn[x,y,z] <- list("hello", c(1,2,3), sqrt(2))
+#' #' print(x)
+#' #' [1] "hello"
+#' #' print(y)
+#' #' [1] 1 2 3
+#' #' print(z)
+#' #' [1] 1.414214
+#' #' @rdname mreturn
+#' mreturn <- structure(NA, class = "mreturn")
+#' 
+#' `[<-.mreturn` <- function(mreturn, ..., value) {
+#'   vars <- sapply(substitute(list(...)), deparse)[-1]
+#'   stopifnot(all(make.names(vars) == vars)) # invalid variable names
+#'   stopifnot(length(value) == length(vars)) # incorrect number of return values
+#'   for(i in 1:length(vars)) {
+#'     assign(vars[i], value=value[[i]], envir = parent.frame())
+#'   }
+#'   return(mreturn)
+#' }
