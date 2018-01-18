@@ -1289,6 +1289,8 @@ TOSTtwo <- function (m1, m2, sd1, sd2, n1, n2, low_eqbound_d, high_eqbound_d,
 #' @param power Desired power level (0.8 default)
 #' @param method Whether to use the exact statistics or simulation.  "Exact" - exact statistics, "equivalence" - simulate using equivalence package tost function, "TOSTER" - simulate using TOSTER functions
 #' @param n_iterations Number of simulation iterations
+#' @param paired If the TOST is paired (kappa should be 1)
+#' @param paired_var Sample variance for paired TOST
 #' @return For exact statistics, returns a list of two values: minimum sample size to achieve desired power and the power at that sample size.  For simulation, returns a series of sample sizes and achieved power up to the desired power.  
 #' @examples
 #' res_equivalence <- tost_power(mu_A=1, mu_B=1, sd_A=0.2, sd_B=0.2, delta=0.2, method="equivalence")
@@ -1311,7 +1313,7 @@ TOSTtwo <- function (m1, m2, sd1, sd2, n1, n2, low_eqbound_d, high_eqbound_d,
 #' \url{http://powerandsamplesize.com/Calculators/Compare-2-Means/2-Sample-Equality}
 #' Chow S, Shao J, Wang H. 2008. Sample Size Calculations in Clinical Research. 2nd Ed. Chapman & Hall/CRC Biostatistics Series. page 58.
 #' @export
-tost_power <- function(mu_A, mu_B, sd_A, sd_B, delta=0.3, kappa=1, alpha=0.05, power=0.8, method="equivalence", n_iterations=1000) {
+tost_power <- function(mu_A, mu_B, sd_A, sd_B, delta=0.3, kappa=1, alpha=0.05, power=0.8, method="equivalence", n_iterations=1000, paired=F, sample_var=0) {
   require(equivalence)
   
   beta <- 1-power
@@ -1336,12 +1338,19 @@ tost_power <- function(mu_A, mu_B, sd_A, sd_B, delta=0.3, kappa=1, alpha=0.05, p
   patience <- 3
   while(power_empirical < power | patience > 0) {
     pvals <- sapply(1:n_iterations, function(i) {
-       sA <- rnorm(nB_i*kappa, mean=mu_A, sd=sd_A)
-       sB <- rnorm(nB_i, mean=mu_B, sd=sd_B)
+      if(!paired) {
+        sA <- rnorm(nB_i*kappa, mean=mu_A, sd=sd_A)
+        sB <- rnorm(nB_i, mean=mu_B, sd=sd_B)
+      } else {
+        sample_effect <- rnorm(nB_i, sd=sqrt(sample_var))
+        sA <- rnorm(nB_i, mean=mu_A+sample_effect, sd=sd_A)
+        sB <- rnorm(nB_i, mean=mu_B+sample_effect, sd=sd_B)
+      }
        if(method == "equivalence") {
-         res <- tost(sB, sA, epsilon=delta, conf.leve=1-alpha)
+         res <- tost(sB, sA, epsilon=delta, paired=paired, conf.leve=1-alpha)
          res$tost.p.value
        } else {
+        stopifnot(!paired)
         sd_A_emp <- sd(sA)
         sd_B_emp <- sd(sB)
         sd_pooled <- sqrt( ((nB_i*kappa)*sd_A_emp^2 + (nB_i)*sd_B_emp^2) / (nB_i*kappa + nB_i - 2) )

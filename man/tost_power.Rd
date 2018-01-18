@@ -5,7 +5,8 @@
 \title{Calculates power/sample size of a TOST test}
 \usage{
 tost_power(mu_A, mu_B, sd_A, sd_B, delta = 0.3, kappa = 1, alpha = 0.05,
-  power = 0.8, method = "equivalence", n_iterations = 1000)
+  power = 0.8, method = "equivalence", n_iterations = 1000, paired = F,
+  sample_var = 0)
 }
 \arguments{
 \item{mu_A}{mean of group A}
@@ -27,6 +28,10 @@ tost_power(mu_A, mu_B, sd_A, sd_B, delta = 0.3, kappa = 1, alpha = 0.05,
 \item{method}{Whether to use the exact statistics or simulation.  "Exact" - exact statistics, "equivalence" - simulate using equivalence package tost function, "TOSTER" - simulate using TOSTER functions}
 
 \item{n_iterations}{Number of simulation iterations}
+
+\item{paired}{If the TOST is paired (kappa should be 1)}
+
+\item{paired_var}{Sample variance for paired TOST}
 }
 \value{
 For exact statistics, returns a list of two values: minimum sample size to achieve desired power and the power at that sample size.  For simulation, returns a series of sample sizes and achieved power up to the desired power.
