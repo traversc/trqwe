@@ -1167,3 +1167,194 @@ once <- structure(NA, class = "once")
 #'   }
 #'   return(mreturn)
 #' }
+
+
+
+# This is the from the TOSTER package, without any extraneous output
+TOSTtwo <- function (m1, m2, sd1, sd2, n1, n2, low_eqbound_d, high_eqbound_d, 
+                     alpha, var.equal) 
+{
+  if (missing(alpha)) {
+    alpha <- 0.05
+  }
+  if (missing(var.equal)) {
+    var.equal <- FALSE
+  }
+  if (var.equal == TRUE) {
+    sdpooled <- sqrt((((n1 - 1) * (sd1^2)) + (n2 - 1) * (sd2^2))/((n1 + 
+                                                                     n2) - 2))
+    low_eqbound <- low_eqbound_d * sdpooled
+    high_eqbound <- high_eqbound_d * sdpooled
+    degree_f <- n1 + n2 - 2
+    t1 <- ((m1 - m2) - low_eqbound)/(sdpooled * sqrt(1/n1 + 
+                                                       1/n2))
+    p1 <- pt(t1, degree_f, lower.tail = FALSE)
+    t2 <- ((m1 - m2) - high_eqbound)/(sdpooled * sqrt(1/n1 + 
+                                                        1/n2))
+    p2 <- pt(t2, degree_f, lower.tail = TRUE)
+    t <- (m1 - m2)/(sdpooled * sqrt(1/n1 + 1/n2))
+    pttest <- 2 * pt(-abs(t), df = degree_f)
+    LL90 <- (m1 - m2) - qt(1 - alpha, n1 + n2 - 2) * (sdpooled * 
+                                                        sqrt(1/n1 + 1/n2))
+    UL90 <- (m1 - m2) + qt(1 - alpha, n1 + n2 - 2) * (sdpooled * 
+                                                        sqrt(1/n1 + 1/n2))
+    LL95 <- (m1 - m2) - qt(1 - (alpha/2), n1 + n2 - 2) * 
+      (sdpooled * sqrt(1/n1 + 1/n2))
+    UL95 <- (m1 - m2) + qt(1 - (alpha/2), n1 + n2 - 2) * 
+      (sdpooled * sqrt(1/n1 + 1/n2))
+  }
+  else {
+    sdpooled <- sqrt((sd1^2 + sd2^2)/2)
+    low_eqbound <- low_eqbound_d * sdpooled
+    high_eqbound <- high_eqbound_d * sdpooled
+    degree_f <- (sd1^2/n1 + sd2^2/n2)^2/(((sd1^2/n1)^2/(n1 - 
+                                                          1)) + ((sd2^2/n2)^2/(n2 - 1)))
+    t1 <- ((m1 - m2) - low_eqbound)/sqrt(sd1^2/n1 + sd2^2/n2)
+    p1 <- pt(t1, degree_f, lower.tail = FALSE)
+    t2 <- ((m1 - m2) - high_eqbound)/sqrt(sd1^2/n1 + sd2^2/n2)
+    p2 <- pt(t2, degree_f, lower.tail = TRUE)
+    t <- (m1 - m2)/sqrt(sd1^2/n1 + sd2^2/n2)
+    pttest <- 2 * pt(-abs(t), df = degree_f)
+    LL90 <- (m1 - m2) - qt(1 - alpha, degree_f) * sqrt(sd1^2/n1 + 
+                                                         sd2^2/n2)
+    UL90 <- (m1 - m2) + qt(1 - alpha, degree_f) * sqrt(sd1^2/n1 + 
+                                                         sd2^2/n2)
+    LL95 <- (m1 - m2) - qt(1 - (alpha/2), degree_f) * sqrt(sd1^2/n1 + 
+                                                             sd2^2/n2)
+    UL95 <- (m1 - m2) + qt(1 - (alpha/2), degree_f) * sqrt(sd1^2/n1 + 
+                                                             sd2^2/n2)
+  }
+  ptost <- max(p1, p2)
+  ttost <- ifelse(abs(t1) < abs(t2), t1, t2)
+  dif <- (m1 - m2)
+  testoutcome <- ifelse(pttest < alpha, "significant", "non-significant")
+  TOSToutcome <- ifelse(ptost < alpha, "significant", "non-significant")
+  
+  if (var.equal == TRUE) {
+    # message(cat("Using alpha = ", alpha, " Student's t-test was ", 
+    #             testoutcome, ", t(", degree_f, ") = ", t, ", p = ", 
+    #             pttest, sep = ""))
+    # cat("\\n")
+    # message(cat("Using alpha = ", alpha, " the equivalence test based on Student's t-test was ", 
+    #             TOSToutcome, ", t(", degree_f, ") = ", ttost, ", p = ", 
+    #            ptost, sep = ""))
+  }
+  else {
+    # message(cat("Using alpha = ", alpha, " Welch's t-test was ", 
+    #            testoutcome, ", t(", degree_f, ") = ", t, ", p = ", 
+    #            pttest, sep = ""))
+    # cat("\\n")
+    # message(cat("Using alpha = ", alpha, " the equivalence test based on Welch's t-test  was ", 
+    #            TOSToutcome, ", t(", degree_f, ") = ", ttost, ", p = ", 
+    #            ptost, sep = ""))
+  }
+  TOSTresults <- data.frame(t1, p1, t2, p2, degree_f)
+  colnames(TOSTresults) <- c("t-value 1", "p-value 1", "t-value 2", 
+                             "p-value 2", "df")
+  bound_d_results <- data.frame(low_eqbound_d, high_eqbound_d)
+  colnames(bound_d_results) <- c("low bound d", "high bound d")
+  bound_results <- data.frame(low_eqbound, high_eqbound)
+  colnames(bound_results) <- c("low bound raw", "high bound raw")
+  CIresults <- data.frame(LL90, UL90)
+  colnames(CIresults) <- c(paste("Lower Limit ", 100 * (1 - 
+                                                          alpha * 2), "% CI raw", sep = ""), paste("Upper Limit ", 
+                                                                                                   100 * (1 - alpha * 2), "% CI raw", sep = ""))
+  # cat("TOST results:\\n")
+  #print(TOSTresults)
+  # cat("\\n")
+  # cat("Equivalence bounds (Cohen's d):\\n")
+  #print(bound_d_results)
+  # cat("\\n")
+  # cat("Equivalence bounds (raw scores):\\n")
+  #print(bound_results)
+  # cat("\\n")
+  # cat("TOST confidence interval:\\n")
+  #print(CIresults)
+  invisible(list(TOST_t1 = t1, TOST_p1 = p1, TOST_t2 = t2, 
+                 TOST_p2 = p2, TOST_df = degree_f, alpha = alpha, low_eqbound = low_eqbound, 
+                 high_eqbound = high_eqbound, low_eqbound_d = low_eqbound_d, 
+                 high_eqbound_d = high_eqbound_d, LL_CI_TOST = LL90, UL_CI_TOST = UL90))
+}
+
+
+#' Calculates power/sample size of a TOST test
+#' @description Calculates the sample size required for a TOST test, given a sample size through exact statistics or simulation
+#' @param mu_A mean of group A
+#' @param mu_B mean of group B
+#' @param sd_A SD of group A
+#' @param sd_B SD of group B
+#' @param delta maximum tolerated difference (i.e., abs(mu_A - mu_B))
+#' @param kappa sample size of group A / sample size of group B (nA / nB)
+#' @param alpha significance threshold (0.05 default)
+#' @param power Desired power level (0.8 default)
+#' @param method Whether to use the exact statistics or simulation.  "Exact" - exact statistics, "equivalence" - simulate using equivalence package tost function, "TOSTER" - simulate using TOSTER functions
+#' @param n_iterations Number of simulation iterations
+#' @return For exact statistics, returns a list of two values: minimum sample size to achieve desired power and the power at that sample size.  For simulation, returns a series of sample sizes and achieved power up to the desired power.  
+#' @examples
+#' res_equivalence <- tost_power(mu_A=1, mu_B=1, sd_A=0.2, sd_B=0.2, delta=0.2, method="equivalence")
+#' res_toster <- tost_power(mu_A=1, mu_B=1, sd_A=0.2, sd_B=0.2, delta=0.2, method="TOSTER")
+#' res_exact <- tost_power(mu_A=1, mu_B=1, sd_A=0.2, sd_B=0.2, delta=0.2, method="exact")
+#' 
+#' plot(res_equivalence$nB, res_equivalence$Power, xlim=c(1,20), ylim=c(0,1), type="s", main="TOST power analysis")
+#' lines(res_toster$nB, res_toster$Power, col="green", type="s")
+#' abline(h=0.8, col="blue", lty=2)
+#' points(res_exact$nB, res_exact$Power, col="red", pch=18, cex=2)
+#' legend("topleft", legend=c("equivalence", "TOSTER", "exact"), col=c("black", "green", "red"), pch=1)
+#' 
+#' res_equivalence <- tost_power(mu_A=1, mu_B=1, sd_A=0.2, sd_B=0.2, delta=0.1, method="equivalence")
+#' res_exact <- tost_power(mu_A=1, mu_B=1, sd_A=0.2, sd_B=0.2, delta=0.1, method="exact")
+#' plot(res_equivalence$nB, res_equivalence$Power, xlim=c(1,80), ylim=c(0,1), type="s", main="TOST power analysis")
+#' abline(h=0.8, col="blue", lty=2)
+#' points(res_exact$nB, res_exact$Power, col="red", pch=18, cex=2)
+#' legend("topleft", legend=c("equivalence", "exact"), col=c("black", "red"), pch=1)
+#' @seealso
+#' \url{http://powerandsamplesize.com/Calculators/Compare-2-Means/2-Sample-Equality}
+#' Chow S, Shao J, Wang H. 2008. Sample Size Calculations in Clinical Research. 2nd Ed. Chapman & Hall/CRC Biostatistics Series. page 58.
+#' @export
+tost_power <- function(mu_A, mu_B, sd_A, sd_B, delta=0.3, kappa=1, alpha=0.05, power=0.8, method="equivalence", n_iterations=1000) {
+  require(equivalence)
+  
+  beta <- 1-power
+  
+  if(method == "exact") {
+    stopifnot(paired == F)
+    
+    # Reference for exact calculation: 
+    # http://powerandsamplesize.com/Calculators/Compare-2-Means/2-Sample-Equality
+    # Chow S, Shao J, Wang H. 2008. Sample Size Calculations in Clinical Research. 2nd Ed. Chapman & Hall/CRC Biostatistics Series. page 58.
+    # Adapted for different variance for group A and B
+    # (1+1/kappa)*(sd*(qnorm(1-alpha)+qnorm(1-beta/2))/(abs(mu_A-mu_B)-delta))^2
+    nB <- (sd_A^2+sd_B^2/kappa)*((qnorm(1-alpha)+qnorm(1-beta/2))/(abs(mu_A-mu_B)-delta))^2
+    nB_ceil <- ceiling(nB) # 108
+    # z <- (abs(mu_A-mu_B)-delta)/(sd*sqrt((1+1/kappa)/nB))
+    z <- (abs(mu_A-mu_B)-delta)/(sqrt((sd_A^2+sd_B^2/kappa)/nB))
+    Power <- 2*(pnorm(z-qnorm(1-alpha))+pnorm(-z-qnorm(1-alpha)))-1
+    return(list(nB=nB_ceil, Power=Power))
+  }
+  
+  nB_i <- 3
+  power_empirical <- 0
+  power_curve <- c()
+  patience <- 3
+  while(power_empirical < power | patience > 0) {
+    pvals <- sapply(1:n_iterations, function(i) {
+       sA <- rnorm(nB_i*kappa, mean=mu_A, sd=sd_A)
+       sB <- rnorm(nB_i, mean=mu_B, sd=sd_B)
+       if(method == "equivalence") {
+         res <- tost(sB, sA, epsilon=delta, conf.leve=1-alpha)
+         res$tost.p.value
+       } else {
+        sd_A_emp <- sd(sA)
+        sd_B_emp <- sd(sB)
+        sd_pooled <- sqrt( ((nB_i*kappa)*sd_A_emp^2 + (nB_i)*sd_B_emp^2) / (nB_i*kappa + nB_i - 2) )
+        res <- TOSTtwo(m1=mean(sA), m2=mean(sB), sd1=sd_A_emp, sd2=sd_B_emp, n1=nB_i*kappa, n2=nB_i, low_eqbound=-(delta/sd_pooled), high_eqbound=(delta/sd_pooled), alpha = alpha)
+        res$TOST_p2
+       }
+    })
+    power_empirical <- sum(pvals < 0.05) / n_iterations
+    power_curve <- c(power_curve, power_empirical)
+    nB_i <- nB_i + 1
+    if(power_empirical > power) patience <- patience - 1
+  }
+  return(list(nB=1:length(power_curve)+2, Power=power_curve))
+}
