@@ -1317,8 +1317,6 @@ tost_power <- function(mu_A, mu_B, sd_A, sd_B, delta=0.3, kappa=1, alpha=0.05, p
   beta <- 1-power
   
   if(method == "exact") {
-    stopifnot(paired == F)
-    
     # Reference for exact calculation: 
     # http://powerandsamplesize.com/Calculators/Compare-2-Means/2-Sample-Equality
     # Chow S, Shao J, Wang H. 2008. Sample Size Calculations in Clinical Research. 2nd Ed. Chapman & Hall/CRC Biostatistics Series. page 58.
