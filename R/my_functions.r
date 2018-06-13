@@ -802,6 +802,42 @@ mcreadRDS <- function(file,mc.cores=min(parallel::detectCores(),4)) {
   return(object)
 }
 
+
+
+#' saveRz
+#' @description faster serialization + compression using fst package
+#' @export
+saveRz <- function(object, file, compressor="ZSTD", compression=0) {
+  writeBin(fst::compress_fst(serialize(object, connection=NULL), compressor=compressor, compression=compression), con=file, useBytes=T)
+}
+
+#' readRz
+#' @description faster serialization + compression using fst package
+#' @export
+readRz <- function(file) {
+  unserialize(fst::decompress_fst(readBin(file, "raw", n=file.info(file)$size)))
+}
+
+#' Multi-threaded readRDS
+#' @description Uses the pigz utility to improve loading large R objects.  This is compatible with saveRDS and readRDS functions.  Requires pigz (sudo apt-get install pigz on Ubuntu).  
+#' @param file The filename of the rds object. 
+#' @param mc.cores How many cores to use in pigz.  The program does not seem to benefit after more than about 4 cores.  
+#' @return The R object.  
+#' @examples
+#' x <- sample(1e4, 1e7, replace=T)
+#' saveRDS(x, file="temp.Rds")
+#' xmc <- mcreadRDS("temp.Rds")
+#' @seealso
+#' \url{http://stackoverflow.com/questions/28927750/}
+#' @export
+mcreadRDS <- function(file,mc.cores=min(parallel::detectCores(),4)) {
+  con <- pipe(paste0("pigz -d -c -p",mc.cores," ",file))
+  object <- readRDS(file = con)
+  close(con)
+  return(object)
+}
+
+
 #' Nelson Aelen estimator
 #' @description Nelson–Aalen estimator is an estimator of the cumulative hazard function in survival data.  It can be used to compare the overall risks of two groups or used to estimate the number of deaths before a certain time.  
 #' @param time The time of each patient.  

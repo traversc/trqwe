@@ -10,4 +10,4 @@ R CMD Rd2pdf . -o "manual.pdf" --no-preview --force
 
 git add .
 git commit -am 'init'
-git push origin master
+# git push origin master
