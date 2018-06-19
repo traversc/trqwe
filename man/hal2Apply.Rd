@@ -18,5 +18,4 @@ FUN <- function(i) {
   Datain \%>\% summarize(n=n()) \%>\% {(.$n+z+i)^2}
 }
 ret1 <- hal2Apply(1:1e4, FUN, varlist=c("Datain", "z"), .packages="dplyr", mc.cores=8, mc.preschedule = T)
-#' @export
 }

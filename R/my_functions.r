@@ -1425,7 +1425,7 @@ aws_ls <- function(s3path, awspath="/Users/tching/Library/Python/2.7/bin//aws") 
 #'   Datain %>% summarize(n=n()) %>% {(.$n+z+i)^2}
 #' }
 #' ret1 <- hal2Apply(1:1e4, FUN, varlist=c("Datain", "z"), .packages="dplyr", mc.cores=8, mc.preschedule = T)
-#' #' @export
+#' @export
 hal2Apply <- function(X, FUN, 
                       varlist=ls(envir), .packages="auto", envir=parent.frame(), 
                       mc.preschedule=F, mc.cores=8, 
