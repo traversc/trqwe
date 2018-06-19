@@ -2,6 +2,7 @@ library(dplyr)
 library(fst)
 library(compiler)
 library(trqwe)
+library(RcppMsgPack)
 enableJIT(3)
 
 purge_cache <- function() {
@@ -13,19 +14,23 @@ x <- vector(mode="character", length=1e6)
 for(i in 1:length(x)) {
   x[i] <- paste0(sample(letters, replace=T, size=sample(100)), collapse="")
 }
-x <- as.list(x)
+# x <- as.list(x)
 
-lz4write <- function(x,file, compressor="LZ4") {
+lz4write <- function(x,file, compressor="LZ4", serialization="R") {
   purge_cache()
   start <- Sys.time()
-  writeBin(compress_fst(serialize(x, connection=NULL), compressor=compressor), con=file, useBytes=T)
+  if(serialization=="R") {
+    writeBin(compress_fst(serialize(x, connection=NULL), compressor=compressor), con=file, useBytes=T)
+  } else {
+    writeBin(compress_fst(msgpack_pack(x), compressor=compressor), con=file, useBytes=T)
+  }
   as.numeric(Sys.time() - start)
 }
 
-lz4read <- function(file) {
+lz4read <- function(file, serialization="R") {
   purge_cache()
   start <- Sys.time()
-  xu <- unserialize(decompress_fst(readBin(file, "raw", n=file.info(file)$size)))
+  xu <- msgpack_unpack(decompress_fst(readBin(file, "raw", n=file.info(file)$size)), simplify = T)
   as.numeric(Sys.time() - start)
 }
 
@@ -60,11 +65,11 @@ summ <- function(times) {
   cat(mean(times), " +/- ", sd(times), "\n")
 }
 
-cat("lz4_write ")
-replicate(5, {lz4write(x, "ctest.rs.lz4")}) %>% summ
-
-cat("lz4_read ")
-replicate(5, {lz4read("ctest.rs.lz4")}) %>% summ
+# cat("lz4_write ")
+# replicate(5, {lz4write(x, "ctest.rs.lz4")}) %>% summ
+# 
+# cat("lz4_read ")
+# replicate(5, {lz4read("ctest.rs.lz4")}) %>% summ
 
 cat("zstd_write ")
 replicate(5, {lz4write(x, "ctest.rs.zstd", compressor = "ZSTD")}) %>% summ
@@ -72,23 +77,29 @@ replicate(5, {lz4write(x, "ctest.rs.zstd", compressor = "ZSTD")}) %>% summ
 cat("zstd_read ")
 replicate(5, {lz4read("ctest.rs.zstd")}) %>% summ
 
-cat("saveRDS ")
-replicate(5, {saveR(x, "ctest.Rds")}) %>% summ
+cat("zstd_write_mp ")
+replicate(5, {lz4write(x, "ctest.rs.zstd", compressor = "ZSTD", serialization="MsgPack")}) %>% summ
 
-cat("readRDS ")
-replicate(5, {readR("ctest.Rds")}) %>% summ
-
-cat("saveRDS_uncompressed ")
-replicate(5, {saveR(x, "ctest2.Rds", compress=F)}) %>% summ
-
-cat("readRDS_uncompressed ")
-replicate(5, {readR("ctest2.Rds")}) %>% summ
-
-cat("mcsaveRDS_uncompressed ")
-replicate(5, {mcsaveR(x, "ctest3.Rds")}) %>% summ
-
-cat("mcreadRDS_uncompressed ")
-replicate(5, {mcreadR("ctest3.Rds")}) %>% summ
+cat("zstd_read_mp ")
+replicate(5, {lz4read("ctest.rs.zstd", serialization="MsgPack")}) %>% summ
+# 
+# cat("saveRDS ")
+# replicate(5, {saveR(x, "ctest.Rds")}) %>% summ
+# 
+# cat("readRDS ")
+# replicate(5, {readR("ctest.Rds")}) %>% summ
+# 
+# cat("saveRDS_uncompressed ")
+# replicate(5, {saveR(x, "ctest2.Rds", compress=F)}) %>% summ
+# 
+# cat("readRDS_uncompressed ")
+# replicate(5, {readR("ctest2.Rds")}) %>% summ
+# 
+# cat("mcsaveRDS_uncompressed ")
+# replicate(5, {mcsaveR(x, "ctest3.Rds")}) %>% summ
+# 
+# cat("mcreadRDS_uncompressed ")
+# replicate(5, {mcreadR("ctest3.Rds")}) %>% summ
 
 cat("lz4_file_size ", file.info("ctest.rs.lz4")$size /1e6, "\n")
 cat("zstd_file_size ", file.info("ctest.rs.zstd")$size /1e6, "\n")

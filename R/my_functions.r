@@ -804,18 +804,25 @@ mcreadRDS <- function(file,mc.cores=min(parallel::detectCores(),4)) {
 
 
 
-#' saveRz
-#' @description faster serialization + compression using fst package
+#' saveRZ
+#' @description faster serialization + compression using zstd
 #' @export
-saveRz <- function(object, file, compressor="ZSTD", compression=0) {
-  writeBin(fst::compress_fst(serialize(object, connection=NULL), compressor=compressor, compression=compression), con=file, useBytes=T)
+saveRZ <- function(object, file, compression=3, mc.cores=1) {
+  con <- pipe(sprintf("zstd --format=zstd -f -%s -T%s -o %s", compression, mc.cores, file), "wb")
+  saveRDS(object, file = con)
+  close(con)
+  # writeBin(fst::compress_fst(serialize(object, connection=NULL), compressor=compressor, compression=compression), con=file, useBytes=T)
 }
 
 #' readRz
 #' @description faster serialization + compression using fst package
 #' @export
-readRz <- function(file) {
-  unserialize(fst::decompress_fst(readBin(file, "raw", n=file.info(file)$size)))
+readRZ <- function(file, mc.cores=1) {
+  # unserialize(fst::decompress_fst(readBin(file, "raw", n=file.info(file)$size)))
+  con <- pipe(sprintf("zstd --format=zstd -d -c -T%s %s", mc.cores, file), "rb")
+  object <- readRDS(file = con)
+  close(con)
+  return(object)
 }
 
 #' Multi-threaded readRDS
@@ -1401,3 +1408,53 @@ tost_power <- function(mu_A, mu_B, sd_A, sd_B, delta=0.3, kappa=1, alpha=0.05, p
   }
   return(list(nB=1:length(power_curve)+2, Power=power_curve))
 }
+
+#' @export
+aws_ls <- function(s3path, awspath="/Users/tching/Library/Python/2.7/bin//aws") {
+  cmd <- sprintf("%s s3 ls %s --recursive | awk '{$1=$2=$3=\"\"; print $0}' | sed 's/^[ \t]*//'", awspath, s3path)
+  system(cmd, intern=T)
+}
+
+
+#' Apply on server
+#' @description Using PSOCK cluster.  Like mclapply, but on a server.  
+#' @examples
+#' Datain <- data.frame(x=1:100)
+#' z <- 1
+#' FUN <- function(i) {
+#'   Datain %>% summarize(n=n()) %>% {(.$n+z+i)^2}
+#' }
+#' ret1 <- hal2Apply(1:1e4, FUN, varlist=c("Datain", "z"), .packages="dplyr", mc.cores=8, mc.preschedule = T)
+#' #' @export
+hal2Apply <- function(X, FUN, 
+                      varlist=ls(envir), .packages="auto", envir=parent.frame(), 
+                      mc.preschedule=F, mc.cores=8, 
+                      user=Sys.info()["user"], master_ip="auto", server_ip="hal2") {
+  if(master_ip == "auto") {
+    master_ip <- tryCatch({system("internal-ip --ipv4", intern=T)},
+                          error=function(e) cat("Run npm install --global internal-ip-cli\n")
+    )
+  }
+  if(.packages == "auto") {
+    .packages <- names(sessionInfo()$otherPkgs)
+  }
+  require(parallel)
+  cl <- makeCluster(rep(server_ip,mc.cores), master = master_ip, user=user, port=11001, homogeneous=F)
+  clusterExport(cl, varlist=varlist, envir=envir)
+  if(!is.null(.packages)) {
+    clusterCall(cl, fun=function() {
+      for(pkg in .packages) {
+        library(pkg, character.only=T)
+      }
+    })
+  }
+  if(mc.preschedule) {
+    res <- parLapply(cl, X, fun=FUN)
+  } else {
+    res <- parLapplyLB(cl, X, fun=FUN)
+  }
+  stopCluster(cl)
+  return(res)
+}
+
+
