@@ -1428,18 +1428,20 @@ aws_ls <- function(s3path, awspath="/Users/tching/Library/Python/2.7/bin//aws") 
 #' @export
 hal2Apply <- function(X, FUN, 
                       varlist=ls(envir), .packages="auto", envir=parent.frame(), 
-                      mc.preschedule=F, mc.cores=8, 
-                      user=Sys.info()["user"], master_ip="auto", server_ip="hal2") {
-  if(master_ip == "auto") {
-    master_ip <- tryCatch({system("internal-ip --ipv4", intern=T)},
-                          error=function(e) cat("Run npm install --global internal-ip-cli\n")
-    )
-  }
+                      mc.preschedule=F, mc.cores.server=8, mc.cores.local=3,
+                      user=Sys.info()["user"], server_ip="hal2",revtunnel=T, ...) {
+  # if(master_ip == "auto") {
+  #   master_ip <- tryCatch({system("internal-ip --ipv4", intern=T)},
+  #                         error=function(e) cat("Run npm install --global internal-ip-cli\\n")
+  #   )
+  # }
   if(.packages == "auto") {
     .packages <- names(sessionInfo()$otherPkgs)
   }
   require(parallel)
-  cl <- makeCluster(rep(server_ip,mc.cores), master = master_ip, user=user, port=11001, homogeneous=F)
+  require(future)
+  cl <- makeClusterPSOCK(c(rep("localhost", mc.cores.local),rep(server_ip,mc.cores.server)), user=user, 
+                         homogeneous=F, revtunnel=revtunnel,...)
   clusterExport(cl, varlist=varlist, envir=envir)
   if(!is.null(.packages)) {
     clusterCall(cl, fun=function() {

@@ -5,8 +5,9 @@
 \title{Apply on server}
 \usage{
 hal2Apply(X, FUN, varlist = ls(envir), .packages = "auto",
-  envir = parent.frame(), mc.preschedule = F, mc.cores = 8,
-  user = Sys.info()["user"], master_ip = "auto", server_ip = "hal2")
+  envir = parent.frame(), mc.preschedule = F, mc.cores.server = 8,
+  mc.cores.local = 3, user = Sys.info()["user"], server_ip = "hal2",
+  revtunnel = T, ...)
 }
 \description{
 Using PSOCK cluster.  Like mclapply, but on a server.
