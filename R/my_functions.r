@@ -1435,7 +1435,7 @@ hal2Apply <- function(X, FUN,
   #                         error=function(e) cat("Run npm install --global internal-ip-cli\\n")
   #   )
   # }
-  if(.packages == "auto") {
+  if(.packages[1] == "auto") {
     .packages <- names(sessionInfo()$otherPkgs)
   }
   require(parallel)
