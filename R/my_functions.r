@@ -1416,19 +1416,10 @@ aws_ls <- function(s3path, awspath="/Users/tching/Library/Python/2.7/bin//aws") 
 }
 
 
-#' Apply on server
-#' @description Using PSOCK cluster.  Like mclapply, but on a server.  
-#' @examples
-#' Datain <- data.frame(x=1:100)
-#' z <- 1
-#' FUN <- function(i) {
-#'   Datain %>% summarize(n=n()) %>% {(.$n+z+i)^2}
-#' }
-#' ret1 <- hal2Apply(1:1e4, FUN, varlist=c("Datain", "z"), .packages="dplyr", mc.cores=8, mc.preschedule = T)
+#' Heterogeneous cluster helper
+#' @description Using PSOCK cluster from future package 
 #' @export
-hal2Apply <- function(X, FUN, 
-                      varlist=ls(envir), .packages="auto", envir=parent.frame(), 
-                      mc.preschedule=F, mc.cores.server=8, mc.cores.local=3,
+halCluster <- function(varlist=ls(envir), .packages="auto", envir=parent.frame(), mc.cores.server=8, mc.cores.local=3,
                       user=Sys.info()["user"], server_ip="hal2",revtunnel=T, ...) {
   # if(master_ip == "auto") {
   #   master_ip <- tryCatch({system("internal-ip --ipv4", intern=T)},
@@ -1450,13 +1441,7 @@ hal2Apply <- function(X, FUN,
       }
     })
   }
-  if(mc.preschedule) {
-    res <- parLapply(cl, X, fun=FUN)
-  } else {
-    res <- parLapplyLB(cl, X, fun=FUN)
-  }
-  stopCluster(cl)
-  return(res)
+  return(cl)
 }
 
 
