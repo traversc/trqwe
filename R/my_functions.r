@@ -1445,3 +1445,11 @@ halCluster <- function(varlist=ls(envir), .packages="auto", envir=parent.frame()
 }
 
 
+#' @export
+log_offset_scale <- function(offset, base=10){
+  trans <- function(x) {log(x+offset, base=base)}
+  inv <- function(x) {base^x-offset}
+  trans_new("log_offset_scale", transform = trans, inverse = inv)
+}
+
+
