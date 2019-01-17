@@ -7,7 +7,6 @@
 #' @export
 reload <- function(package, pos=2) {
     pstring <- deparse(substitute(package))
-    print(pstring)
     unloadNamespace(pstring)
     library(pstring, pos=pos, character.only=T)
 }
