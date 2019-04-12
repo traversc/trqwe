@@ -2,6 +2,7 @@
 % Please edit documentation in R/my_functions.r
 \name{mcreadRDS}
 \alias{mcreadRDS}
+\alias{mcreadRDS}
 \title{Multi-threaded readRDS}
 \usage{
 mcreadRDS(file, mc.cores = min(parallel::detectCores(), 4))

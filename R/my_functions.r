@@ -1451,4 +1451,20 @@ log_offset_scale <- function(offset, base=10){
   trans_new("log_offset_scale", transform = trans, inverse = inv)
 }
 
+#' @export
+pow <- function(x, ...) {
+  vars <- substitute(list(...))
+  vars <- as.character(vars)[-1]
+  stopifnot(length(x) == length(vars))
+  for(i in seq_len(length(x))) assign(vars[i], x[[i]], pos = 1)
+}
+
+
+#' @export
+rc <- function(nucSeq) return(stringi::stri_reverse(chartr("acgtACGT", "tgcaTGCA", nucSeq)))
+
+
+
+
+
 
