@@ -1466,5 +1466,22 @@ rc <- function(nucSeq) return(stringi::stri_reverse(chartr("acgtACGT", "tgcaTGCA
 
 
 
+#' @export
+sterling2 <- function(n,k) {
+  require(gmp)
+  sum((-1L)^(0:k) * chooseZ(k, 0:k) * as.bigz(k-0:k)^(as.bigz(n))) %/% factorialZ(k)
+}
+
+#' @export
+sterling2_sum <- function(n) {
+  require(gmp)
+  sum <- as.bigz(0)
+  for(k in 1:n) {
+    sum = sum + sterling2(n,k)
+  }
+  return (sum)
+}
+
+
 
 
