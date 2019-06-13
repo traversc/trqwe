@@ -1487,7 +1487,9 @@ enroll <- function(...) {
   x <- list(...)
   nx <- names(x)
   for(i in seq_along(x)) {
-    assign(nx[i], x[[i]], envir=parent.frame())
+    if(nx[i] != "") {
+      assign(nx[i], x[[i]], envir=parent.frame())
+    }
   }
 }
 
