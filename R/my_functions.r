@@ -1482,6 +1482,15 @@ sterling2_sum <- function(n) {
   return (sum)
 }
 
+#' @export
+enroll <- function(...) {
+  x <- list(...)
+  nx <- names(x)
+  for(i in seq_along(x)) {
+    assign(nx[i], x[[i]], envir=parent.frame())
+  }
+}
+
 
 
 
