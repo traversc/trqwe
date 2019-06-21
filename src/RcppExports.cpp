@@ -38,11 +38,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fast_euclidean_dist
+NumericMatrix fast_euclidean_dist(NumericMatrix x, NumericMatrix y);
+RcppExport SEXP _trqwe_fast_euclidean_dist(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(fast_euclidean_dist(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_trqwe_tablec_string", (DL_FUNC) &_trqwe_tablec_string, 1},
     {"_trqwe_tablec_int", (DL_FUNC) &_trqwe_tablec_int, 1},
     {"_trqwe_tablec_factor", (DL_FUNC) &_trqwe_tablec_factor, 1},
+    {"_trqwe_fast_euclidean_dist", (DL_FUNC) &_trqwe_fast_euclidean_dist, 2},
     {NULL, NULL, 0}
 };
 

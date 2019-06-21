@@ -44,3 +44,19 @@ IntegerVector tablec_factor(IntegerVector x) {
     return tab;
 }
 
+// [[Rcpp::export]]
+NumericMatrix fast_euclidean_dist(NumericMatrix x, NumericMatrix y) {
+    int xrow = x.nrow();
+    int yrow = y.nrow();
+    int ndims = x.ncol();
+    NumericMatrix xy(xrow, yrow);
+    for(int i=0; i<xrow; i++) {
+        for(int j=0; j<yrow; j++) {
+            xy(i,j) = 0;
+            for(int k=0; k<ndims; k++) {
+                xy(i,j) += (x(i,k) - y(j,k)) * (x(i,k) - y(j,k));
+            }
+        }
+    }
+    return xy;
+}

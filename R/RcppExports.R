@@ -13,3 +13,7 @@ tablec_factor <- function(x) {
     .Call('_trqwe_tablec_factor', PACKAGE = 'trqwe', x)
 }
 
+fast_euclidean_dist <- function(x, y) {
+    .Call('_trqwe_fast_euclidean_dist', PACKAGE = 'trqwe', x, y)
+}
+

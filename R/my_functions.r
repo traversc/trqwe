@@ -1493,6 +1493,36 @@ enroll <- function(...) {
   }
 }
 
-
+#' @export
+install_as_name <- function(pkg, new_name, tempfolder=NULL) {
+  require(dplyr)
+  require(Rcpp)
+  previous_dir <- getwd()
+  if(is.null(tempfolder)) tempfolder <- tempfile()
+  dir.create(tempfolder, showWarnings=F)
+  setwd(tempfolder)
+  
+  sprintf("wget %s", pkg) %>% system
+  zfolder <- sprintf("tar -xvf %s", basename(pkg)) %>% system(intern=T)
+  zfolder <- zfolder %>% gsub("/.*$", "", .) %>% unique
+  z <- list.files(zfolder, recursive = T, full.names=T)
+  z <- z[basename(z) == "DESCRIPTION"]
+  stopifnot(length(z) == 1)
+  stopifnot(length(zfolder) == 1)
+  
+  sprintf("mv %s %s", zfolder, new_name) %>% system
+  sprintf("sed -i -r 's/^Package:.+/Package: %s/' %s/DESCRIPTION", new_name, new_name) %>% system
+  
+  Rcpp::compileAttributes(new_name)
+  sprintf("sed -i -r 's/^useDynLib.+/useDynLib\\(%s, .registration = TRUE\\)/' %s/NAMESPACE", new_name, new_name) %>% system
+  
+  file.remove(sprintf("%s/MD5", new_name))
+  
+  sprintf("R CMD build %s", new_name) %>% system
+  
+  sprintf("R CMD INSTALL %s*.tar.gz", new_name) %>% system
+  
+  setwd(previous_dir)
+}
 
 
