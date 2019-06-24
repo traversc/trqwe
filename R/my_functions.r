@@ -1502,25 +1502,38 @@ install_as_name <- function(pkg, new_name, tempfolder=NULL) {
     tempfolder <- tempfile()
   dir.create(tempfolder, showWarnings = F)
   setwd(tempfolder)
+  print(tempfolder)
   sprintf("wget %s", pkg) %>% system
-  zfolder <- untar(basename(pkg), list=T, compressed="gzip")
-  untar(basename(pkg), compressed="gzip")
-  # zfolder <- sprintf("tar -xvf %s 2>&1", basename(pkg)) %>% system(intern = T)
+  zfolder <- untar(basename(pkg), list = T, compressed = "gzip")
+  untar(basename(pkg), compressed = "gzip")
   zfolder <- zfolder %>% gsub("/.*$", "", .) %>% unique
   z <- list.files(zfolder, recursive = T, full.names = T)
   z <- z[basename(z) == "DESCRIPTION"]
   stopifnot(length(z) == 1)
   stopifnot(length(zfolder) == 1)
+  
+  # sprintf("sed -i -r 's/^Package:.+/Package: %s/' %s/DESCRIPTION", 
+  #         new_name, new_name) %>% system
+  # sprintf("sed -i -r 's/^useDynLib.+/useDynLib\\(%s, .registration = TRUE\\)/' %s/NAMESPACE", 
+  #         new_name, new_name) %>% system
+  x <- readLines(z)
+  x <- gsub("^Package.+", sprintf("Package: %s", new_name), x)
+  writeLines(x, con=z)
+  
+  x <- readLines(paste0(zfolder, "/NAMESPACE"))
+  x <- gsub("^useDynLib.+", sprintf("useDynLib(%s, .registration = TRUE)", new_name), x)
+  writeLines(x, con=paste0(zfolder, "/NAMESPACE"))
+  
   sprintf("mv %s %s", zfolder, new_name) %>% system
-  sprintf("sed -i -r 's/^Package:.+/Package: %s/' %s/DESCRIPTION", 
-          new_name, new_name) %>% system
+  
   Rcpp::compileAttributes(new_name)
-  sprintf("sed -i -r 's/^useDynLib.+/useDynLib\\(%s, .registration = TRUE\\)/' %s/NAMESPACE", 
-          new_name, new_name) %>% system
+  
   file.remove(sprintf("%s/MD5", new_name))
+  "rm *.tar.gz" %>% system
   sprintf("R CMD build %s", new_name) %>% system
-  sprintf("R CMD INSTALL %s*.tar.gz", new_name) %>% system
+  "R CMD INSTALL *.tar.gz" %>% system
   setwd(previous_dir)
+  
 }
 
 
