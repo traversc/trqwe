@@ -1537,3 +1537,29 @@ install_as_name <- function(pkg, new_name, tempfolder=NULL) {
 }
 
 
+# https://stackoverflow.com/questions/56353069/r-parallel-abort-all-mclapply-operations
+mclapply_catch <- function(X, FUN, ..., mc.preschedule=TRUE,
+                     mc.set.seed=TRUE, mc.silent=FALSE,
+                     mc.cores=getOption("mc.cores", 2L), 
+                     mc.cleanup=TRUE, mc.allow.recursive=TRUE,
+                     affinity.list=NULL){
+    require(parallel)
+    tmpFileName <- tempfile()
+    fn <- function(X){
+        if(file.exists(tmpFileName))
+            return(NA)
+        o <- try(do.call("FUN", c(X, list(...))), silent=TRUE)
+        if(class(o)=="try-error"){
+            file.create(tmpFileName)
+        }
+        o
+    }
+    ret <- mclapply(X=X, FUN=fn, mc.preschedule=mc.preschedule,
+                    mc.set.seed=mc.set.seed, mc.silent=mc.silent,
+                    mc.cores=mc.cores, mc.cleanup=mc.cleanup,
+                    mc.allow.recursive=mc.allow.recursive,
+                    affinity.list=affinity.list)
+    if(exists(tmpFileName))
+        file.remove(tmpFileName)
+    ret
+}

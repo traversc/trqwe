@@ -4,9 +4,9 @@
 \alias{tost_power}
 \title{Calculates power/sample size of a TOST test}
 \usage{
-tost_power(mu_A, mu_B, sd_A, sd_B, delta = 0.3, kappa = 1, alpha = 0.05,
-  power = 0.8, method = "equivalence", n_iterations = 1000, paired = F,
-  sample_var = 0)
+tost_power(mu_A, mu_B, sd_A, sd_B, delta = 0.3, kappa = 1,
+  alpha = 0.05, power = 0.8, method = "equivalence",
+  n_iterations = 1000, paired = F, sample_var = 0)
 }
 \arguments{
 \item{mu_A}{mean of group A}
