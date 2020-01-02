@@ -29,8 +29,9 @@ std::unordered_map<int, int> tablec_int(IntegerVector x) {
 // [[Rcpp::export]]
 IntegerVector tablec_factor(IntegerVector x) {
     LogicalVector nas = is_na(x);
-    int tab_size = is_true(any(nas)) ? max(na_omit(x))+1 : max(x);
-    // std::vector<int> tab(tab_size, 0);
+    bool has_nas = is_true(any(nas));
+    CharacterVector _levels = x.attr("levels");
+    int tab_size = has_nas ? _levels.size() + 1 : _levels.size();
     IntegerVector tab=rep(0, tab_size);
     int n = x.size();
     for(int i=0;i<n;i++) {
@@ -40,9 +41,10 @@ IntegerVector tablec_factor(IntegerVector x) {
             tab[x[i]-1]++;
         }
     }
-    tab.attr("names") = x.attr("levels");
+    tab.attr("names") = _levels;
     return tab;
 }
+
 
 // [[Rcpp::export]]
 NumericMatrix fast_euclidean_dist(NumericMatrix x, NumericMatrix y) {
