@@ -15,8 +15,18 @@
 #' @rdname mreturn
 mreturn <- structure(NA, class = "mreturn")}
 \usage{
-TOSTtwo(m1, m2, sd1, sd2, n1, n2, low_eqbound_d, high_eqbound_d, alpha,
-  var.equal)
+TOSTtwo(
+  m1,
+  m2,
+  sd1,
+  sd2,
+  n1,
+  n2,
+  low_eqbound_d,
+  high_eqbound_d,
+  alpha,
+  var.equal
+)
 }
 \description{
 `[<-.mreturn` <- function(mreturn, ..., value) {

@@ -13,5 +13,5 @@ install(package, repos = "http://cran.us.r-project.org")
 Utility function for installing packages from CRAN easily.
 }
 \examples{
-\\code{install(Rcpp)}
+\code{install(Rcpp)}
 }

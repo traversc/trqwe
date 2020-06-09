@@ -1563,3 +1563,8 @@ mclapply_catch <- function(X, FUN, ..., mc.preschedule=TRUE,
         file.remove(tmpFileName)
     ret
 }
+
+#' @export
+inspect <- function(...) {
+  .Internal(inspect(...))
+}

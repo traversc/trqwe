@@ -18,7 +18,7 @@ A vector of the same length as \code{x}, TRUE if any pattern matches.
 Takes in a list of regex patterns and returns true if any pattern matches.
 }
 \examples{
-x <- fastReadLines("http://textfiles.com/ufo/ufobooks.ufo", newlinechar="\\r\\n", 1e5)
+x <- fastReadLines("http://textfiles.com/ufo/ufobooks.ufo", newlinechar="\r\n", 1e5)
 head(x[mgrepl(c("ALIENS", "UFO"), x)])
 
 [1] "                         UFOLOGY BOOKS (REVISION 2.1 343 books)"

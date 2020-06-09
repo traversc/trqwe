@@ -15,5 +15,5 @@ reload(package, pos = 2)
 Unload and reload a package and sets the namespace search order.
 }
 \examples{
-\\code{reload(trqwe)}
+\code{reload(trqwe)}
 }

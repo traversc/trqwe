@@ -16,7 +16,7 @@ A vector with leading and trailing whitespace removed.
 Removes leading and trailing whitespace in a vector of strings.
 }
 \examples{
-chop(c("    hello ", "  123  \\t"))
+chop(c("    hello ", "  123  \t"))
 
 [1] "hello" "123"
 }
