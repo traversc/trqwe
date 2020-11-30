@@ -13,5 +13,5 @@ bioc(package)
 Utility function for installing packages from bioconductor easily.
 }
 \examples{
-\code{bioc(DESeq2)}
+\\code{bioc(DESeq2)}
 }

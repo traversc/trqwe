@@ -4,17 +4,9 @@
 \alias{halCluster}
 \title{Heterogeneous cluster helper}
 \usage{
-halCluster(
-  varlist = ls(envir),
-  .packages = "auto",
-  envir = parent.frame(),
-  mc.cores.server = 8,
-  mc.cores.local = 3,
-  user = Sys.info()["user"],
-  server_ip = "hal2",
-  revtunnel = T,
-  ...
-)
+halCluster(varlist = ls(envir), .packages = "auto",
+  envir = parent.frame(), mc.cores.server = 8, mc.cores.local = 3,
+  user = Sys.info()["user"], server_ip = "hal2", revtunnel = T, ...)
 }
 \description{
 Using PSOCK cluster from future package

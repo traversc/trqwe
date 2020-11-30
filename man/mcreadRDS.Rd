@@ -12,6 +12,10 @@ mcreadRDS(file, mc.cores = min(parallel::detectCores(), 4))
 \item{file}{The filename of the rds object.}
 
 \item{mc.cores}{How many cores to use in pigz.  The program does not seem to benefit after more than about 4 cores.}
+
+\item{file}{The filename of the rds object.}
+
+\item{mc.cores}{How many cores to use in pigz.  The program does not seem to benefit after more than about 4 cores.}
 }
 \value{
 The R object.

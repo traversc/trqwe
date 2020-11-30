@@ -1568,3 +1568,17 @@ mclapply_catch <- function(X, FUN, ..., mc.preschedule=TRUE,
 inspect <- function(...) {
   .Internal(inspect(...))
 }
+
+#' @export
+sysbash <- function(cmd, ...) {
+  bash_profile <- file.exists("~/.bash_profile")
+  if(bash_profile) {
+    cmd <- sprintf("source ~/.bash_profile; %s", cmd)
+    system2("/bin/bash", args = c("-c", shQuote(cmd)), ...)
+  } else {
+    cmd <- sprintf("source ~/.profile; %s", cmd)
+    system2("/bin/bash", args = c("-c", shQuote(cmd)), ...)
+  }
+}
+
+
